@@ -43,9 +43,9 @@ it('can store a PC', function () {
         ]);
 
     assertDatabaseHas('pcs', [
-        "name" => $data->name,
-        "url" => $data->url,
-        "user_id" => $user->id,
+        'name' => $data->name,
+        'url' => $data->url,
+        'user_id' => $user->id,
     ]);
 });
 
@@ -88,9 +88,9 @@ it('can update a PC', function () {
         ]);
 
     assertDatabaseHas('pcs', [
-        "name" => $data->name,
-        "url" => $data->url,
-        "user_id" => $user->id,
+        'name' => $data->name,
+        'url' => $data->url,
+        'user_id' => $user->id,
     ]);
 });
 

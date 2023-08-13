@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePCRequest;
 use App\Models\PC;
-use Illuminate\Http\Request;
 
 class PCController extends Controller
 {
