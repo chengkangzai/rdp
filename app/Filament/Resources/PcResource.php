@@ -4,13 +4,16 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PCResource\Pages;
 use App\Models\Pc;
-use Filament\Forms;
+use Carbon\Carbon;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
+use Filament\Tables\Columns\Layout\Stack;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class PcResource extends Resource
@@ -38,15 +41,7 @@ class PcResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('url')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->required(),
+                //
             ]);
     }
 
@@ -54,31 +49,76 @@ class PcResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('url')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('user.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Stack::make([
+                    TextColumn::make('name')
+                        ->alignCenter()
+                        ->weight(FontWeight::Bold)
+                        ->searchable()
+                        ->sortable(),
+
+                    TextColumn::make('updated_at')
+                        ->alignCenter()
+                        ->badge()
+                        ->tooltip(fn ($state) => 'Last Seen : '.Carbon::parse($state)->diffForHumans())
+                        ->formatStateUsing(fn ($state) => Carbon::parse($state)->diffInHours(now()) > 24 ? 'Offline' : 'Online')
+                        ->icon(function ($state) {
+                            $hour = Carbon::parse($state)->diffInHours(now());
+
+                            return match (true) {
+                                $hour > 24 => 'heroicon-o-x-circle',
+                                $hour > 12 => 'heroicon-o-exclamation-circle',
+                                default => 'heroicon-o-check-circle',
+                            };
+                        })
+                        ->color(function ($state) {
+                            $hour = Carbon::parse($state)->diffInHours(now());
+
+                            return match (true) {
+                                $hour > 24 => 'danger',
+                                $hour > 12 => 'warning',
+                                default => 'success',
+                            };
+                        }),
+                    TextColumn::make('url')
+                        ->copyable()
+                        ->copyMessage('Copied!')
+                        ->copyMessageDuration(1500)
+                        ->alignCenter(),
+
+                    TextColumn::make('created_at')
+                        ->formatStateUsing(fn ($state) => 'Last Seen : '.Carbon::parse($state)->format('d/m/Y H:i'))
+                        ->alignCenter(),
+
+                    TextColumn::make('url')
+                        ->badge()
+                        ->copyable()
+                        ->copyMessage('Copied!')
+                        ->copyMessageDuration(1500)
+                        ->copyableState(fn ($state) => 'mstsc '.$state)
+                        ->size(TextColumn\TextColumnSize::Large)
+                        ->visible(fn ($state) => str($state)->contains('tcp'))
+                        ->formatStateUsing(fn ($state) => 'Copy MSTSC')
+                        ->alignCenter(),
+
+                    TextColumn::make('url')
+                        ->badge()
+                        ->url(fn ($state) => $state)
+                        ->size(TextColumn\TextColumnSize::Large)
+                        ->visible(fn ($state) => str($state)->contains('http'))
+                        ->formatStateUsing(fn ($state) => 'Open In Browser')
+                        ->alignCenter(),
+                ])->space(3),
+            ])
+            ->contentGrid([
+                'md' => 2,
+                'lg' => 3,
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

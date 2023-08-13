@@ -13,9 +13,14 @@ class PcFactory extends Factory
 
     public function definition(): array
     {
+        $protocol = $this->faker->randomElement(['http', 'https', 'tcp', 'udp']);
+        $port = $this->faker->numberBetween(1, 65535);
+        $ipv4 = $this->faker->ipv4();
+        $url = $protocol.'://'.$ipv4.':'.$port;
+
         return [
             'name' => $this->faker->name(),
-            'url' => $this->faker->url(),
+            'url' => $url,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
 
