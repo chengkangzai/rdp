@@ -9,8 +9,8 @@ class StorePcRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required'],
-            'url' => ['required', 'url'],
+            'name' => ['required', 'string', 'max:255'],
+            'url' => ['required', 'string', 'max:255'],
         ];
     }
 

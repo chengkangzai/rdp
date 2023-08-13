@@ -18,5 +18,9 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 
-Route::post('/me', [AuthController::class, 'me'])->name('auth.me')->middleware('auth:sanctum');
+Route::middleware('auth:sanctum')->as('auth.')->group(function () {
+    Route::post('/me', [AuthController::class, 'me'])->name('me');
+    Route::post('/issue-token', [AuthController::class, 'issueToken'])->name('issue-token');
+});
+
 Route::resource('pcs', PcController::class)->middleware('auth:sanctum');

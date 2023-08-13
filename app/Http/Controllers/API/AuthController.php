@@ -47,6 +47,20 @@ class AuthController extends Controller
         ]);
     }
 
+    public function issueToken(Request $request)
+    {
+        $request->validate([
+            'device_name' => 'required',
+        ]);
+
+        $token = auth()->user()->createToken($request->device_name)->plainTextToken;
+
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+        ]);
+    }
+
     public function me(Request $request)
     {
         return $request->user();
