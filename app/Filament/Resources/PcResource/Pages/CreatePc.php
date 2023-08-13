@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\PCResource\Pages;
+namespace App\Filament\Resources\PcResource\Pages;
 
 use App\Filament\Resources\PcResource;
 use Filament\Resources\Pages\CreateRecord;
