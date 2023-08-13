@@ -17,7 +17,7 @@ class PcResource extends Resource
 {
     protected static ?string $model = Pc::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-computer-desktop';
 
     protected static ?string $navigationLabel = 'PCs';
 
