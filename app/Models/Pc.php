@@ -7,12 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class PC extends Model
+class Pc extends Model
 {
     use SoftDeletes;
     use HasFactory;
-
-    protected $table = 'pcs';
 
     protected $fillable = [
         'name',

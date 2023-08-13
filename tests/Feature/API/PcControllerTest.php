@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\PC;
+use App\Models\Pc;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use function Pest\Laravel\actingAs;
@@ -15,7 +15,7 @@ uses(RefreshDatabase::class);
 
 it('can fetch all PCs', function () {
     $user = User::factory()->create();
-    $PCs = PC::factory()->count(3)->create([
+    $PCs = Pc::factory()->count(3)->create([
         'user_id' => $user->id,
     ]);
     actingAs($user);
@@ -26,7 +26,7 @@ it('can fetch all PCs', function () {
 
 it('can store a PC', function () {
     $user = User::factory()->create();
-    $data = PC::factory()->make();
+    $data = Pc::factory()->make();
 
     postJson(route('pcs.store', $data))->assertUnauthorized();  // Ensure guests cannot add a PC.
 
@@ -51,7 +51,7 @@ it('can store a PC', function () {
 
 it('can display a PC', function () {
     $user = User::factory()->create();
-    $PC = PC::factory()->create([
+    $PC = Pc::factory()->create([
         'user_id' => $user->id,
     ]);
     actingAs($user);
@@ -69,10 +69,10 @@ it('can display a PC', function () {
 
 it('can update a PC', function () {
     $user = User::factory()->create();
-    $PC = PC::factory()->create([
+    $PC = Pc::factory()->create([
         'user_id' => $user->id,
     ]);
-    $data = PC::factory()->make([
+    $data = Pc::factory()->make([
         'user_id' => $user->id,
     ]);
     actingAs($user);
@@ -96,7 +96,7 @@ it('can update a PC', function () {
 
 it('can delete a PC', function () {
     $user = User::factory()->create();
-    $pc = PC::factory()->create([
+    $pc = Pc::factory()->create([
         'user_id' => $user->id,
     ]);
 

@@ -32,7 +32,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function pcs(): HasMany
     {
-        return $this->hasMany(PC::class);
+        return $this->hasMany(Pc::class);
     }
 
     public function canAccessPanel(Panel $panel): bool

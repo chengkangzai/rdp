@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
-use App\Models\PC;
-use App\Policies\PCPolicy;
+use App\Models\Pc;
+use App\Policies\PcPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -16,7 +16,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         //
-        PC::class => PCPolicy::class,
+        Pc::class => PcPolicy::class,
     ];
 
     /**

@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\API\PCController;
+use App\Http\Controllers\API\PcController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,4 +19,4 @@ Route::post('/register', [AuthController::class, 'register'])->name('auth.regist
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 
 Route::post('/me', [AuthController::class, 'me'])->name('auth.me')->middleware('auth:sanctum');
-Route::resource('pcs', PCController::class)->middleware('auth:sanctum');
+Route::resource('pcs', PcController::class)->middleware('auth:sanctum');

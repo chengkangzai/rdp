@@ -2,14 +2,14 @@
 
 namespace Database\Factories;
 
-use App\Models\PC;
+use App\Models\Pc;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
-class PCFactory extends Factory
+class PcFactory extends Factory
 {
-    protected $model = PC::class;
+    protected $model = Pc::class;
 
     public function definition(): array
     {
