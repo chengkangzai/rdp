@@ -127,7 +127,8 @@ class PcResource extends Resource
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
-            ]);
+            ])
+            ->poll();
     }
 
     public static function getRelations(): array

@@ -3,107 +3,43 @@
 use App\Models\Pc;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use function Pest\Laravel\actingAs;
-use function Pest\Laravel\assertDatabaseHas;
-use function Pest\Laravel\assertSoftDeleted;
-use function Pest\Laravel\deleteJson;
-use function Pest\Laravel\get;
-use function Pest\Laravel\postJson;
-use function Pest\Laravel\putJson;
 
 uses(RefreshDatabase::class);
 
-it('can fetch all PCs', function () {
+it('creates a new PC if not already present for the user', function () {
     $user = User::factory()->create();
-    $PCs = Pc::factory()->count(3)->create([
-        'user_id' => $user->id,
-    ]);
-    actingAs($user);
-    get(route('pcs.index'))
-        ->assertOk()
-        ->assertJson($PCs->toArray());
-});
 
-it('can store a PC', function () {
-    $user = User::factory()->create();
-    $data = Pc::factory()->make();
+    $requestData = [
+        'name' => 'My Custom PC',
+        'url' => 'https://example.com',
+    ];
 
-    postJson(route('pcs.store', $data))->assertUnauthorized();  // Ensure guests cannot add a PC.
+    $this->actingAs($user)
+        ->post(route('ping'), $requestData)
+        ->assertSuccessful();
 
-    actingAs($user);
-
-    postJson(route('pcs.store', $data->toArray()))
-        ->assertCreated()
-        ->assertJsonStructure([
-            'id',
-            'name',
-            'user_id',
-            'created_at',
-            'updated_at',
-        ]);
-
-    assertDatabaseHas('pcs', [
-        'name' => $data->name,
-        'url' => $data->url,
+    $this->assertDatabaseHas('pcs', [
+        'name' => 'My Custom PC',
         'user_id' => $user->id,
     ]);
 });
 
-it('can display a PC', function () {
+it('updates the PC if one with the same name is already present for the user', function () {
     $user = User::factory()->create();
-    $PC = Pc::factory()->create([
+    $existingPc = Pc::factory()->create([
+        'name' => 'My Custom PC',
         'user_id' => $user->id,
-    ]);
-    actingAs($user);
-
-    get(route('pcs.show', $PC))
-        ->assertOk()
-        ->assertJsonStructure([
-            'id',
-            'name',
-            'user_id',
-            'created_at',
-            'updated_at',
-        ]);
-});
-
-it('can update a PC', function () {
-    $user = User::factory()->create();
-    $PC = Pc::factory()->create([
-        'user_id' => $user->id,
-    ]);
-    $data = Pc::factory()->make([
-        'user_id' => $user->id,
-    ]);
-    actingAs($user);
-
-    putJson(route('pcs.update', $PC), $data->toArray())
-        ->assertOk()
-        ->assertJsonStructure([
-            'id',
-            'name',
-            'user_id',
-            'created_at',
-            'updated_at',
-        ]);
-
-    assertDatabaseHas('pcs', [
-        'name' => $data->name,
-        'url' => $data->url,
-        'user_id' => $user->id,
-    ]);
-});
-
-it('can delete a PC', function () {
-    $user = User::factory()->create();
-    $pc = Pc::factory()->create([
-        'user_id' => $user->id,
+        'url' => 'https://example.com',
     ]);
 
-    actingAs($user);
+    $requestData = [
+        'name' => 'My Custom PC',
+        'url' => 'https://example.com',
+    ];
 
-    deleteJson(route('pcs.destroy', $pc))
-        ->assertNoContent();
+    $this->actingAs($user)
+        ->post(route('ping'), $requestData)
+        ->assertSuccessful();
 
-    assertSoftDeleted($pc);
+    expect(Pc::where('user_id', $user->id)->count())->toBe(1);
 });

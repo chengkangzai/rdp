@@ -8,30 +8,21 @@ use App\Models\Pc;
 
 class PcController extends Controller
 {
-    public function index()
+    public function ping(StorePcRequest $request)
     {
-        return Pc::all();
-    }
+        $pc = Pc::query()
+            ->where('user_id', $request->user()->id)
+            ->where('name', $request->name)
+            ->first();
 
-    public function store(StorePcRequest $request)
-    {
-        return Pc::create($request->validated() + ['user_id' => $request->user()->id]);
-    }
-
-    public function show(Pc $pc)
-    {
-        return $pc;
-    }
-
-    public function update(StorePcRequest $request, Pc $pc)
-    {
-        return tap($pc)->update($request->all());
-    }
-
-    public function destroy(Pc $pc)
-    {
-        $pc->delete();
-
-        return response()->noContent();
+        if ($pc) {
+            return $pc->update($request->validated() + [
+                'updated_at' => now(),
+            ]);
+        } else {
+            return Pc::create($request->validated() + [
+                'user_id' => $request->user()->id,
+            ]);
+        }
     }
 }

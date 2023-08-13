@@ -23,4 +23,4 @@ Route::middleware('auth:sanctum')->as('auth.')->group(function () {
     Route::post('/issue-token', [AuthController::class, 'issueToken'])->name('issue-token');
 });
 
-Route::resource('pcs', PcController::class)->middleware('auth:sanctum');
+Route::post('/ping', [PcController::class, 'ping'])->name('ping')->middleware('auth:sanctum');

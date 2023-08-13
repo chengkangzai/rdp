@@ -16,6 +16,7 @@ class Pc extends Model
         'name',
         'url',
         'user_id',
+        'updated_at',
     ];
 
     public function user(): BelongsTo
